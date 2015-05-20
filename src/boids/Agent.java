@@ -7,22 +7,30 @@ public class Agent {
 	private double x;
 	private double y;
 
+	private double radius;
+
 	private Vector velocity;
 	private Vector g_v;
 	private Vector s_v;
 
+	/** Linear factor */
 	private double seperationFactor_a = 500;
+	/** Cubic factor */
 	private double seperationFactor_b = 100000;
-	private double seperationDistance = 25;
+
+	private double seperationDistance;
 	private double goalFactor = 0.001;
 
 	// The target the agent is trying to get to
 	private double gx;
 	private double gy;
 
-	public Agent(int ix, int iy) {
+	public Agent(double ix, double iy, double ir) {
 		x = ix;
 		y = iy;
+
+		radius = ir;
+		seperationDistance = 3 * radius;
 
 		gx = x;
 		gy = y;
@@ -52,7 +60,7 @@ public class Agent {
 
 		for (Agent a : allAgents) {
 			// Don't calculate anything based on yourself!
-			if (a.equals(this)) {
+			if (a == this) {
 				continue;
 			}
 
@@ -95,6 +103,10 @@ public class Agent {
 
 	public double getY() {
 		return y;
+	}
+
+	public double getRadius() {
+		return radius;
 	}
 
 	public double getDx() {
