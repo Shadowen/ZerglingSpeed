@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class MainDisplay extends JPanel implements MouseListener {
 		// Init agents!
 		boids = new ArrayList<Agent>();
 		Random r = new Random();
-		for (int i = 0; i < 500; i++) {
-			boids.add(new Agent(r.nextInt(640), r.nextInt(480)));
+		for (int i = 0; i < 30; i++) {
+			boids.add(new Agent(r.nextInt(640), r.nextInt(480), 10));
 		}
 
 		// Logic
@@ -60,26 +61,47 @@ public class MainDisplay extends JPanel implements MouseListener {
 
 	@Override
 	public void paint(Graphics g) {
+		super.paint(g);
 		g.clearRect(0, 0, getWidth(), getHeight());
 		for (Agent a : boids) {
 			int x = (int) a.getX();
 			int y = (int) a.getY();
+			int r = (int) a.getRadius();
 			g.setColor(Color.RED);
 			g.drawLine(x, y, a.getGoalX(), a.getGoalY());
 			g.setColor(Color.BLACK);
-			g.drawOval(x - 10, y - 10, 20, 20);
+			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 			g.setColor(Color.GREEN);
 			g.drawLine(x, y, (int) (a.getX() + a.getDx() * 10),
 					(int) (a.getY() + a.getDy() * 10));
 		}
+
+		// Collisions
+		boids.stream().forEach(
+				a -> boids
+						.stream()
+						.filter(b -> a != b)
+						.filter(b -> Point.distanceSq(a.getX(), a.getY(),
+								b.getX(), b.getY()) < Math.pow(a.getRadius()
+								+ b.getRadius(), 2))
+						.forEach(
+								b -> {
+									g.setColor(Color.RED);
+									g.fillOval(
+											(int) (b.getX() - b.getRadius()),
+											(int) (b.getY() - b.getRadius()),
+											(int) (2 * b.getRadius()),
+											(int) (2 * b.getRadius()));
+								}));
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Random r = new Random();
-		for (Agent a : boids) {
-			a.setGoal(r.nextInt(getWidth()), r.nextInt(getHeight()));
-		}
+		// Random r = new Random();
+		// for (Agent a : boids) {
+		// a.setGoal(r.nextInt(getWidth()), r.nextInt(getHeight()));
+		// }
+		boids.forEach(a -> a.setGoal(e.getX(), e.getY()));
 	}
 
 	@Override
