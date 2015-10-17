@@ -1,6 +1,4 @@
 # ZerglingSpeed
-A test platform for boid algorithms for cooperative pathfinding of large groups of colliding agents.
-
 Say you have a bunch of agents pathing to the same point... How can you make sure they can move there together, rather than in single file?
 ![image](https://cloud.githubusercontent.com/assets/8551479/10560929/6a4dcf8a-74e7-11e5-8f18-09b7b662432e.png)
 
